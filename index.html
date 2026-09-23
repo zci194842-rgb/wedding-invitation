@@ -530,6 +530,82 @@ section{padding:64px 26px;}
 }
 #eggModal .egg-close:active{background:var(--bordeaux-dark);}
 
+/* ===== 右上角分享按钮 ===== */
+#shareFab{
+  position:fixed;top:calc(18px + env(safe-area-inset-top));right:16px;
+  z-index:68;width:46px;height:46px;border-radius:50%;
+  border:1px solid rgba(230,206,151,.7);
+  background:rgba(87,17,26,.82);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,.3);
+  transition:transform .25s;
+}
+#shareFab:active{transform:scale(.92);}
+#shareFab svg{width:21px;height:21px;fill:var(--gold-light);}
+
+/* ===== 分享面板（底部弹层） ===== */
+.share-modal{
+  position:fixed;inset:0;z-index:88;
+  display:none;align-items:flex-end;justify-content:center;
+  background:rgba(30,12,16,.68);backdrop-filter:blur(4px);
+}
+.share-modal.show{display:flex;}
+.share-modal .sheet{
+  position:relative;width:100%;max-width:560px;
+  background:linear-gradient(180deg,#FFF9EE,#F3E9D8);
+  border-radius:20px 20px 0 0;padding:26px 24px calc(24px + env(safe-area-inset-bottom));
+  text-align:center;animation:rise .45s var(--ease);
+}
+.share-modal h3{font-family:var(--serif);font-size:20px;letter-spacing:.12em;color:var(--bordeaux);}
+.sheet-close{
+  position:absolute;right:14px;top:10px;width:34px;height:34px;border:none;background:none;
+  font-size:26px;line-height:1;color:var(--ink-soft);cursor:pointer;
+}
+.share-opts{display:flex;gap:14px;margin-top:22px;}
+.share-opt{
+  flex:1;background:var(--ivory);border:1px solid rgba(198,161,91,.5);border-radius:14px;
+  padding:18px 10px 14px;cursor:pointer;transition:transform .2s;
+}
+.share-opt:active{transform:scale(.96);}
+.share-opt svg{width:34px;height:34px;fill:var(--bordeaux);}
+.share-opt .t{display:block;margin-top:10px;font-family:var(--serif);font-size:15px;color:var(--bordeaux);letter-spacing:.06em;}
+.share-opt .s{display:block;margin-top:4px;font-size:11px;color:var(--ink-soft);letter-spacing:.02em;}
+
+/* ===== 海报预览弹层 ===== */
+#posterModal{
+  position:fixed;inset:0;z-index:92;
+  display:none;align-items:center;justify-content:center;flex-direction:column;
+  background:rgba(30,12,16,.85);backdrop-filter:blur(8px);padding:24px 20px;
+}
+#posterModal.show{display:flex;}
+#posterModal .poster-img{max-width:344px;width:100%;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.5);}
+#posterModal .poster-hint{margin-top:16px;color:var(--ivory);font-size:13px;letter-spacing:.12em;text-align:center;line-height:1.9;}
+#posterModal .poster-hint b{color:var(--gold-light);}
+#posterModal .poster-close{
+  margin-top:14px;min-height:44px;padding:0 44px;border:none;border-radius:999px;
+  background:var(--gold-deep);color:var(--ivory);font-family:var(--serif);
+  font-size:14px;letter-spacing:.24em;text-indent:.24em;cursor:pointer;
+}
+#posterModal .poster-close:active{background:var(--gold);}
+
+/* ===== 朋友圈引导 ===== */
+#momentsModal .sheet p{margin-top:12px;font-size:14px;color:var(--ink-soft);line-height:2.1;letter-spacing:.03em;text-align:left;}
+#momentsModal .copy-btn{
+  margin-top:18px;width:100%;min-height:48px;border:none;border-radius:12px;
+  background:var(--bordeaux);color:var(--ivory);font-family:var(--serif);
+  font-size:15px;letter-spacing:.2em;cursor:pointer;
+}
+#momentsModal .copy-btn:active{background:var(--bordeaux-dark);}
+
+/* ===== 轻提示 ===== */
+#toast{
+  position:fixed;left:50%;bottom:18%;transform:translateX(-50%) translateY(20px);
+  z-index:99;background:rgba(43,29,24,.92);color:var(--ivory);
+  font-size:13px;letter-spacing:.06em;padding:11px 20px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;}
   .photo,.reveal{opacity:1;transform:none;}
@@ -658,6 +734,51 @@ section{padding:64px 26px;}
   <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
 </button>
 
+<!-- 右上角分享按钮 -->
+<button id="shareFab" type="button" aria-label="分享邀请函">
+  <svg viewBox="0 0 24 24"><path d="M18 16.1c-.8 0-1.5.3-2 .8l-7.1-4.1c.1-.2.1-.5.1-.7s0-.5-.1-.7l7.1-4.1c.6.5 1.3.8 2 .8 1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3c0 .2 0 .5.1.7L8 10.6c-.6-.5-1.3-.8-2-.8-1.7 0-3 1.3-3 3s1.3 3 3 3c.7 0 1.4-.3 2-.8l7.1 4.1c-.1.2-.1.5-.1.7 0 1.7 1.3 3 3 3s3-1.3 3-3-1.3-3-3-3z"/></svg>
+</button>
+
+<!-- 分享面板 -->
+<div id="shareModal" class="share-modal" aria-hidden="true">
+  <div class="sheet">
+    <button class="sheet-close" id="shareClose" type="button" aria-label="关闭">×</button>
+    <h3>分享这份幸福</h3>
+    <div class="share-opts">
+      <div class="share-opt" id="optPoster" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM9 17H5v-2h4v2zm0-4H5v-2h4v2zm0-4H5V7h4v2zm10 8h-8v-2h8v2zm0-4h-8v-2h8v2zm0-4h-8V7h8v2z"/></svg>
+        <span class="t">生成海报</span>
+        <span class="s">带二维码 · 长按保存发给朋友</span>
+      </div>
+      <div class="share-opt" id="optMoments" role="button" tabindex="0">
+        <svg viewBox="0 0 24 24"><path d="M12 2.6 8.7 9H4.6L2.8 4.9 12 2.6zM12 2.6 15.3 9h4.1l1.8-4.1L12 2.6zM4.5 20.5h15a2.5 2.5 0 0 0 2.5-2.5V9h-4.3l-2.6 6H8.9l-2.6-6H2v9a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+        <span class="t">分享到朋友圈</span>
+        <span class="s">复制链接 · 粘贴发布</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 海报预览弹层 -->
+<div id="posterModal" aria-hidden="true">
+  <img id="posterImg" class="poster-img" alt="婚礼邀请函海报">
+  <div class="poster-hint">长按图片保存到手机<br><b>然后发送给朋友</b>，或发到朋友圈</div>
+  <button class="poster-close" id="posterClose" type="button">关 闭</button>
+</div>
+
+<!-- 朋友圈引导弹层 -->
+<div id="momentsModal" class="share-modal" aria-hidden="true">
+  <div class="sheet">
+    <button class="sheet-close" id="momentsClose" type="button" aria-label="关闭">×</button>
+    <h3>分享到朋友圈</h3>
+    <p>1. 点击下方按钮复制链接<br>2. 粘贴发送给朋友 / 群<br>3. 或点微信右上角「···」→「分享到朋友圈」</p>
+    <button class="copy-btn" id="copyLinkBtn" type="button">复制链接</button>
+  </div>
+</div>
+
+<!-- 轻提示 -->
+<div id="toast" role="status"></div>
+
 <!-- 分享引导浮层 -->
 <div id="shareTip">
   <div class="tip-card">
@@ -702,7 +823,8 @@ var WEDDING = {
   address: '',                  // 详细地址（选填，留空则不显示）
   mapLink: '',                  // 选填：填写地图链接后自动显示「查看地图」按钮
   shareTitle: '婚礼邀请函 · 我们结婚啦！',
-  shareDesc: '❤期待你的到来'
+  shareDesc: '❤期待你的到来',
+  shareLink: 'https://zci194842-rgb.github.io/wedding-invitation/'   // 海报二维码 / 复制链接用的正式地址
 };
 
 /* ============================================================
@@ -1060,6 +1182,148 @@ function makeStars(){
     s.style.setProperty('--sx', (Math.random() * 60 - 30) + 'px');
     wrap.appendChild(s);
   }
+}
+
+/* ===== 右上角分享：生成海报 + 分享到朋友圈 ===== */
+var SHARE_LINK = WEDDING.shareLink || (location.origin + location.pathname);
+var shareFab = document.getElementById('shareFab');
+var shareModal = document.getElementById('shareModal');
+var posterModal = document.getElementById('posterModal');
+var momentsModal = document.getElementById('momentsModal');
+var toastEl = document.getElementById('toast');
+var toastTimer = null;
+
+function toast(msg){
+  if (!toastEl) return;
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2200);
+}
+function closeModal(m){ if (m) m.classList.remove('show'); }
+
+shareFab.addEventListener('click', function(){ shareModal.classList.add('show'); });
+document.getElementById('shareClose').addEventListener('click', function(){ closeModal(shareModal); });
+document.getElementById('posterClose').addEventListener('click', function(){ closeModal(posterModal); });
+document.getElementById('momentsClose').addEventListener('click', function(){ closeModal(momentsModal); });
+document.getElementById('optPoster').addEventListener('click', function(){
+  closeModal(shareModal);
+  genPoster();
+});
+document.getElementById('optMoments').addEventListener('click', function(){
+  closeModal(shareModal);
+  momentsModal.classList.add('show');
+});
+document.getElementById('copyLinkBtn').addEventListener('click', function(){
+  copyText(SHARE_LINK);
+});
+
+/* 复制链接 */
+function copyText(t){
+  function done(){ toast('链接已复制，去粘贴发布吧'); }
+  function fallback(){
+    var ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); }
+    catch(e){ toast('复制失败，请手动长按复制'); }
+    document.body.removeChild(ta);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(done, fallback);
+  } else { fallback(); }
+}
+
+/* 二维码库（懒加载，jsDelivr 失败自动切 unpkg） */
+function loadQrLib(){
+  return loadScript('https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js?v=2026092301')
+    .catch(function(){
+      return loadScript('https://unpkg.com/qrcode-generator@1.4.4/qrcode.min.js?v=2026092301');
+    });
+}
+
+function rr(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+/* 生成海报：封面图 + 婚礼信息 + 二维码 */
+function genPoster(){
+  var img = new Image();
+  img.onload = function(){
+    var W = 750, H = 1334, T = 750;
+    var c = document.createElement('canvas');
+    c.width = W; c.height = H;
+    var ctx = c.getContext('2d');
+    // 上半：封面图（方形裁切）
+    var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    var s = Math.max(T / iw, T / ih);
+    var sw = T / s, sh = T / s;
+    ctx.drawImage(img, (iw - sw) / 2, (ih - sh) / 2, sw, sh, 0, 0, T, T);
+    // 下半：勃艮第红面板
+    var g = ctx.createLinearGradient(0, T, 0, H);
+    g.addColorStop(0, '#8E1F2B');
+    g.addColorStop(1, '#57111A');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, T, W, H - T);
+    // 金色描边
+    ctx.strokeStyle = 'rgba(230,206,151,.5)';
+    ctx.lineWidth = 2;
+    rr(ctx, 20, T + 20, W - 40, H - T - 40, 12);
+    ctx.stroke();
+    // 分隔金线
+    ctx.fillStyle = 'rgba(230,206,151,.6)';
+    ctx.fillRect(120, T + 56, W - 240, 1);
+    // 标题
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#E6CE97';
+    ctx.font = '600 44px "Noto Serif SC","Songti SC","STSong",serif';
+    ctx.fillText('婚礼邀请函', W / 2, T + 118);
+    // 日期
+    ctx.fillStyle = '#FAF5EC';
+    ctx.font = '500 58px "Cormorant Garamond","Times New Roman",serif';
+    ctx.fillText(WEDDING.dateBig, W / 2, T + 200);
+    // 地点
+    ctx.font = '400 26px "Noto Serif SC","Songti SC","STSong",serif';
+    ctx.fillStyle = 'rgba(250,245,236,.92)';
+    ctx.fillText(WEDDING.venue, W / 2, T + 246);
+    // 二维码白卡
+    var qs = 224, qx = (W - qs) / 2, qy = T + 290;
+    ctx.fillStyle = '#FFFFFF';
+    rr(ctx, qx - 14, qy - 14, qs + 28, qs + 28, 18);
+    ctx.fill();
+    loadQrLib().then(function(){
+      var qr = qrcode(0, 'M');
+      qr.addData(SHARE_LINK);
+      qr.make();
+      return qr.createDataURL(10, 16);
+    }).then(function(url){
+      var qr = new Image();
+      qr.onload = function(){
+        ctx.drawImage(qr, qx, qy, qs, qs);
+        // 提示语
+        ctx.fillStyle = '#E6CE97';
+        ctx.font = '400 26px "Noto Serif SC","Songti SC","STSong",serif';
+        ctx.fillText('长按扫码即可查看邀请函', W / 2, H - 44);
+        var pImg = document.getElementById('posterImg');
+        pImg.src = c.toDataURL('image/jpeg', 0.92);
+        posterModal.classList.add('show');
+      };
+      qr.src = url;
+    }).catch(function(){
+      toast('网络不佳，海报生成失败，请稍后重试');
+    });
+  };
+  img.onerror = function(){ toast('封面加载失败，请稍后重试'); };
+  img.src = COVER_IMG;
 }
 
 /* ===== 初始化 ===== */
