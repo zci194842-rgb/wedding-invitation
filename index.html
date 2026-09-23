@@ -488,6 +488,45 @@ section{padding:64px 26px;}
   100%{transform:translateY(-46vh) translateX(var(--sx,20px));opacity:0;}
 }
 
+/* ===== 彩蛋弹层（祝福满 50 解锁隐藏照片） ===== */
+#eggModal{
+  position:fixed;inset:0;z-index:90;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(30,12,16,.78);backdrop-filter:blur(6px);
+  padding:26px 24px;
+}
+#eggModal.show{display:flex;}
+#eggModal .egg-card{
+  position:relative;max-width:344px;width:100%;
+  background:linear-gradient(180deg,#FFF9EE,#F3E9D8);
+  border-radius:16px;padding:20px 18px 18px;text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 0 1px rgba(198,161,91,.55);
+  animation:eggIn .6s var(--ease);
+}
+@keyframes eggIn{
+  from{opacity:0;transform:scale(.8) translateY(26px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+#eggModal .egg-ribbon{
+  font-family:var(--latin);font-size:12px;letter-spacing:.4em;text-indent:.4em;
+  color:var(--gold-deep);margin-bottom:10px;
+}
+#eggModal .egg-img{
+  width:100%;border-radius:10px;display:block;
+  box-shadow:0 12px 30px rgba(87,17,26,.22), 0 0 0 1px rgba(198,161,91,.45);
+}
+#eggModal .egg-msg{
+  margin-top:16px;font-family:var(--serif);font-size:17px;font-weight:600;
+  letter-spacing:.06em;color:var(--bordeaux);line-height:1.9;
+}
+#eggModal .egg-msg b{color:var(--gold-deep);}
+#eggModal .egg-close{
+  margin-top:14px;min-height:42px;padding:0 32px;border:none;border-radius:999px;
+  background:var(--bordeaux);color:var(--ivory);font-family:var(--serif);
+  font-size:14px;letter-spacing:.26em;text-indent:.26em;cursor:pointer;
+}
+#eggModal .egg-close:active{background:var(--bordeaux-dark);}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none !important;transition:none !important;}
   .photo,.reveal{opacity:1;transform:none;}
@@ -585,7 +624,7 @@ section{padding:64px 26px;}
         <span class="txt">送出祝福</span>
       </button>
       <div class="bless-count">已收到 <b id="blessCount">0</b> 份祝福</div>
-      <div class="bless-tip">每点一下，都是一份真诚的祝福</div>
+      <div class="bless-tip">每点一下，都是一份真诚的祝福 · 集满 50 份，解锁彩蛋美图</div>
     </div>
   </section>
 
@@ -630,6 +669,16 @@ section{padding:64px 26px;}
     <p>点击右上角「···」<br>选择「分享到朋友圈」<br>把这份喜悦传递给更多朋友</p>
     <div class="tip-copy" id="tipCopy">❤期待你的到来</div>
     <button class="got-it" id="gotIt" type="button">我知道了</button>
+  </div>
+</div>
+
+<!-- 彩蛋弹层（祝福满 50 下解锁隐藏照片） -->
+<div id="eggModal" aria-hidden="true">
+  <div class="egg-card">
+    <div class="egg-ribbon">SECRET SURPRISE</div>
+    <img class="egg-img" src="assets/egg.jpg" alt="彩蛋美图">
+    <div class="egg-msg">哇！你的热情感染了我！<br>获得<b>彩蛋美图</b></div>
+    <button class="egg-close" id="eggClose" type="button">收 好 啦</button>
   </div>
 </div>
 
@@ -937,9 +986,71 @@ if (blessBtn){
     renderBlessCount();
     playCheer();
     burstBless();
+    if (blessTotal >= EGG_AT) unlockEgg();
   });
 }
 renderBlessCount();
+
+/* ===== 彩蛋：祝福满 50 解锁隐藏照片 ===== */
+var EGG_AT = 50;
+var EGG_IMG = { src: 'assets/egg.jpg', cap: '彩蛋美图', wide: false };
+var eggUnlocked = false;
+try { eggUnlocked = localStorage.getItem('weddingEgg') === '1'; } catch(e){}
+
+function unlockEgg(){
+  if (eggUnlocked) return;
+  eggUnlocked = true;
+  try { localStorage.setItem('weddingEgg', '1'); } catch(e){}
+  // 解锁美图永久加入照片墙
+  var grid = document.getElementById('galleryGrid');
+  if (grid){
+    var f = document.createElement('figure');
+    f.className = 'photo in';
+    f.innerHTML = '<img src="' + EGG_IMG.src + '" alt="彩蛋美图" loading="lazy">' +
+      '<figcaption class="cap">' + EGG_IMG.cap + '</figcaption><span class="frost"></span>';
+    grid.appendChild(f);
+  }
+  // 庆祝：音效 + 喝彩粒子 + 彩蛋弹层
+  playCheer();
+  burstBless();
+  var modal = document.getElementById('eggModal');
+  if (modal) modal.classList.add('show');
+  sprinkleEgg();
+}
+
+/* 彩蛋弹层内的星光粒子 */
+function sprinkleEgg(){
+  var modal = document.getElementById('eggModal');
+  var card = modal ? modal.querySelector('.egg-card') : null;
+  if (!card) return;
+  var cr = card.getBoundingClientRect();
+  var colors = ['#E6CE97', '#C6A15B', '#F2B8BE', '#FAF5EC'];
+  for (var i = 0; i < 22; i++){
+    var sp = document.createElement('span');
+    sp.className = 'spark';
+    var ang = Math.random() * Math.PI * 2;
+    var dist = 80 + Math.random() * 150;
+    sp.style.setProperty('--tx', (Math.cos(ang) * dist) + 'px');
+    sp.style.setProperty('--ty', (Math.sin(ang) * dist - 40) + 'px');
+    sp.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
+    var size = 6 + Math.random() * 8;
+    sp.style.width = size + 'px'; sp.style.height = size + 'px';
+    sp.style.borderRadius = '50%';
+    sp.style.background = 'radial-gradient(circle at 32% 28%, #FFF6DE, ' + colors[i % colors.length] + ' 72%)';
+    sp.style.left = (cr.left + cr.width / 2) + 'px';
+    sp.style.top = (cr.top + cr.height / 2) + 'px';
+    modal.appendChild(sp);
+    (function(el){ setTimeout(function(){ el.remove(); }, 1250); })(sp);
+  }
+}
+document.getElementById('eggClose').addEventListener('click', function(){
+  document.getElementById('eggModal').classList.remove('show');
+});
+
+/* 已点满 50 但尚未解锁的访客 → 打开时自动解锁 */
+if (!eggUnlocked && blessTotal >= EGG_AT){
+  setTimeout(unlockEgg, 900);
+}
 
 /* ===== 背景漂浮粒子星光 ===== */
 function makeStars(){
@@ -959,6 +1070,7 @@ function makeStars(){
 }
 
 /* ===== 初始化 ===== */
+if (eggUnlocked) PHOTOS.push(EGG_IMG);
 fillText();
 renderGallery();
 bindReveal();
