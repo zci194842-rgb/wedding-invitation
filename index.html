@@ -994,7 +994,6 @@ renderBlessCount();
 
 /* ===== 彩蛋：祝福满 50 解锁隐藏照片 ===== */
 var EGG_AT = 50;
-var EGG_IMG = { src: 'assets/egg.jpg', cap: '彩蛋美图', wide: false };
 var eggUnlocked = false;
 try { eggUnlocked = localStorage.getItem('weddingEgg') === '1'; } catch(e){}
 
@@ -1002,16 +1001,7 @@ function unlockEgg(){
   if (eggUnlocked) return;
   eggUnlocked = true;
   try { localStorage.setItem('weddingEgg', '1'); } catch(e){}
-  // 解锁美图永久加入照片墙
-  var grid = document.getElementById('galleryGrid');
-  if (grid){
-    var f = document.createElement('figure');
-    f.className = 'photo in';
-    f.innerHTML = '<img src="' + EGG_IMG.src + '" alt="彩蛋美图" loading="lazy">' +
-      '<figcaption class="cap">' + EGG_IMG.cap + '</figcaption><span class="frost"></span>';
-    grid.appendChild(f);
-  }
-  // 庆祝：音效 + 喝彩粒子 + 彩蛋弹层
+  // 庆祝：音效 + 喝彩粒子 + 彩蛋弹层（美图只在弹层中展示，不进照片墙）
   playCheer();
   burstBless();
   var modal = document.getElementById('eggModal');
@@ -1071,7 +1061,6 @@ function makeStars(){
 }
 
 /* ===== 初始化 ===== */
-if (eggUnlocked) PHOTOS.push(EGG_IMG);
 fillText();
 renderGallery();
 bindReveal();
